@@ -27,66 +27,87 @@ build:
     # gtk apps need at least a default icon set for fallback
     - adwaita-icon-theme
   missing_dso_whitelist:
-    - '*/libX11.so*'  # [linux]
-    - '*/libXext.so*'  # [linux]
+    - '*/libX11.so*'              # [linux]
+    - '*/libXext.so*'             # [linux]
     - '/usr/lib/libcups.2.dylib'  # [osx]
 
 requirements:
   build:
-    - meson  # [not win]
+    - meson                                # [not win]
     # see https://github.com/conda-forge/meson-feedstock/issues/30
-    - meson 0.53.2  # [win]
+    - meson 0.53.2                         # [win]
     - ninja
     - pkg-config
-    - pthread-stubs  # [linux]
+    - pthread-stubs                        # [linux]
+    - cmake                                # [linux and aarch64]
+    - cairo                                # [linux and aarch64]
     - {{ compiler('c') }}
-    - {{ cdt('libice-devel') }}  # [linux]
-    - {{ cdt('libsm-devel') }}  # [linux]
-    - {{ cdt('libx11-devel') }}  # [linux]
-    - {{ cdt('libxcomposite-devel') }}  # [linux]
-    - {{ cdt('libxcursor-devel') }}  # [linux]
-    - {{ cdt('libxdamage-devel') }}  # [linux]
-    - {{ cdt('libxext-devel') }}  # [linux]
-    - {{ cdt('libxi-devel') }}  # [linux]
-    - {{ cdt('libxinerama-devel') }}  # [linux]
-    - {{ cdt('libxfixes-devel') }}  # [linux]
-    - {{ cdt('libxrandr-devel') }}  # [linux]
-    - {{ cdt('libxrender-devel') }}  # [linux]
-    - {{ cdt('libxtst-devel') }}  # [linux]
-    - {{ cdt('mesa-libEGL-devel') }}  # [linux]
-    - {{ cdt('mesa-libGL-devel') }}  # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ compiler('cxx') }}
+    - {{ cdt('libxau-devel') }}            # [linux]
+    - {{ cdt('libice-devel') }}            # [linux]
+    - {{ cdt('libsm-devel') }}             # [linux]
+    - {{ cdt('libx11-devel') }}            # [linux]
+    - {{ cdt('libxcomposite-devel') }}     # [linux]
+    - {{ cdt('libxcursor-devel') }}        # [linux]
+    - {{ cdt('libxdamage-devel') }}        # [linux]
+    - {{ cdt('libxext-devel') }}           # [linux]
+    - {{ cdt('libxi-devel') }}             # [linux]
+    - {{ cdt('libxinerama-devel') }}       # [linux]
+    - {{ cdt('libxfixes-devel') }}         # [linux]
+    - {{ cdt('libxrandr-devel') }}         # [linux]
+    - {{ cdt('libxrender-devel') }}        # [linux]
+    - {{ cdt('libxtst-devel') }}           # [linux]
+    - {{ cdt('mesa-libEGL-devel') }}       # [linux]
+    - {{ cdt('mesa-libGL-devel') }}        # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}    # [linux]
   host:
     - atk
     - cairo
     - epoxy
-    - freetype  # [not win]
+    - freetype                             # [not win]
     - fribidi
     - gdk-pixbuf
-    - gettext  # [osx]
+    - gettext                              # [osx]
     - glib
     - gobject-introspection
-    - harfbuzz  # [not win]
-    - libcups  # [linux]
-    - libiconv  # [win]
+    - harfbuzz                             # [not win]
+    - libcups                              # [linux]
+    - libiconv                             # [win]
     - pango
     # dependencies needed with x11 enabled
-    - at-spi2-atk  # [linux]
-    - fontconfig  # [linux]
+    - at-spi2-atk                          # [linux]
+    - fontconfig                           # [linux]
     # dependencies needed with wayland enabled
-    #- libxkbcommon  # [linux]
+    #- libxkbcommon                        # [linux]
   run:
     - gdk-pixbuf
     - glib
-    - harfbuzz  # [not win]
+    - harfbuzz                             # [not win]
     - hicolor-icon-theme
-    - libcups  # [linux]
-    - libiconv  # [win]
+    - libcups                              # [linux]
+    - libiconv                             # [win]
     - pango
 
 test:
   requires:
     - pkg-config
+    - {{ cdt('libxau-devel') }}            # [linux]
+    - {{ cdt('libice-devel') }}            # [linux]
+    - {{ cdt('libsm-devel') }}             # [linux]
+    - {{ cdt('libx11-devel') }}            # [linux]
+    - {{ cdt('libxcomposite-devel') }}     # [linux]
+    - {{ cdt('libxcursor-devel') }}        # [linux]
+    - {{ cdt('libxdamage-devel') }}        # [linux]
+    - {{ cdt('libxext-devel') }}           # [linux]
+    - {{ cdt('libxi-devel') }}             # [linux]
+    - {{ cdt('libxinerama-devel') }}       # [linux]
+    - {{ cdt('libxfixes-devel') }}         # [linux]
+    - {{ cdt('libxrandr-devel') }}         # [linux]
+    - {{ cdt('libxrender-devel') }}        # [linux]
+    - {{ cdt('libxtst-devel') }}           # [linux]
+    - {{ cdt('mesa-libEGL-devel') }}       # [linux]
+    - {{ cdt('mesa-libGL-devel') }}        # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}    # [linux]
   commands:
     # check that the binaries can run
     - gtk-encode-symbolic-svg --help
@@ -104,15 +125,15 @@ test:
     {% endfor %}
 
     # verify that (some) headers get installed
-    - test -f $PREFIX/include/gail-3.0/libgail-util/gail-util.h  # [unix]
-    - test -f $PREFIX/include/gtk-3.0/gdk/gdk.h  # [unix]
-    - test -f $PREFIX/include/gtk-3.0/gdk/x11/gdkx11window.h  # [linux]
-    - test -f $PREFIX/include/gtk-3.0/gtk/gtk.h  # [unix]
+    - test -f $PREFIX/include/gail-3.0/libgail-util/gail-util.h      # [unix]
+    - test -f $PREFIX/include/gtk-3.0/gdk/gdk.h                      # [unix]
+    - test -f $PREFIX/include/gtk-3.0/gdk/x11/gdkx11window.h         # [linux]
+    - test -f $PREFIX/include/gtk-3.0/gtk/gtk.h                      # [unix]
     - test -f $PREFIX/include/gtk-3.0/unix-print/gtk/gtkunixprint.h  # [unix]
-    - if not exist %PREFIX%\\Library\\include\\gail-3.0\\libgail-util\\gail-util.h exit 1  # [win]
-    - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gdk\\gdk.h exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\include\\gail-3.0\\libgail-util\\gail-util.h exit 1    # [win]
+    - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gdk\\gdk.h exit 1                    # [win]
     - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gdk\\win32\\gdkwin32window.h exit 1  # [win]
-    - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gtk\\gtk.h exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gtk\\gtk.h exit 1                    # [win]
 
     # verify that pkgconfig files get installed
     {% set pcs = [
@@ -120,12 +141,12 @@ test:
         "gdk-3.0",
         "gtk+-3.0",
     ] %}
-    {% set pcs = pcs + ["gtk+-unix-print-3.0"] %}  # [unix]
-    {% set pcs = pcs + ["gdk-x11-3.0", "gtk+-x11-3.0"] %}  # [linux]
-    {% set pcs = pcs + ["gdk-quartz-3.0", "gtk+-quartz-3.0"] %}  # [osx]
-    {% set pcs = pcs + ["gdk-win32-3.0", "gtk+-win32-3.0"] %}  # [win]
+    {% set pcs = pcs + ["gtk+-unix-print-3.0"] %}                 # [unix]
+    {% set pcs = pcs + ["gdk-x11-3.0", "gtk+-x11-3.0"] %}         # [linux]
+    {% set pcs = pcs + ["gdk-quartz-3.0", "gtk+-quartz-3.0"] %}   # [osx]
+    {% set pcs = pcs + ["gdk-win32-3.0", "gtk+-win32-3.0"] %}     # [win]
     {% for pc in pcs %}
-    - test -f $PREFIX/lib/pkgconfig/{{ pc }}.pc  # [unix]
+    - test -f $PREFIX/lib/pkgconfig/{{ pc }}.pc                   # [unix]
     - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\{{ pc }}.pc exit 1  # [win]
     {% endfor %}
 
