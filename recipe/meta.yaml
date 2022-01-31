@@ -62,7 +62,9 @@ requirements:
     - {{ cdt('mesa-libEGL-devel') }}       # [linux]
     - {{ cdt('mesa-libGL-devel') }}        # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}    # [linux]
-  host:
+    - patch       # [not win]
+    - m2-patch    # [win]
+   host:
     - atk
     - cairo
     - epoxy
