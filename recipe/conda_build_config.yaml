@@ -1,5 +1,4 @@
-# update gdk_pixbuf pin for windows (version from conda-forge-pinning doesn't exist)
-gdk_pixbuf:  # [win]
-  - 2.38.2  # [win]
-cdt_name:
-  - amzn2  # [linux and aarch64]
+cairo:
+  - 1.16
+harfbuzz:
+  - 4.3.0

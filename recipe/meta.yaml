@@ -17,7 +17,7 @@ source:
     - no-module-warning.patch
 
 build:
-  number: 2
+  number: 3
   skip: True  # [win and vc<14]
   # workaround for bug in LIEF (https://github.com/lief-project/LIEF/issues/239)
   # that resulted in missing symbols
@@ -171,16 +171,16 @@ test:
     {% endfor %}
 
 about:
-  home: http://www.gtk.org/
+  home: https://www.gtk.org/
   license: LGPL-2.0-or-later
   license_family: LGPL
   license_file: COPYING
-  summary: 'Version 3 of the Gtk+ graphical toolkit'
+  summary: Version 3 of the Gtk+ graphical toolkit
   description: |
     GTK is a multi-platform toolkit for creating graphical user interfaces.
     Offering a complete set of widgets, GTK is suitable for projects ranging
     from small one-off projects to complete application suites.
-  doc_url: https://developer.gnome.org/gtk3/
+  doc_url: https://docs.gtk.org/gtk3/
   dev_url: https://gitlab.gnome.org/GNOME/gtk
 
 extra:
