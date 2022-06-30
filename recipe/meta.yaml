@@ -13,8 +13,11 @@ source:
   url: https://download.gnome.org/sources/{{ name }}/{{ version_majmin }}/{{ name }}-{{ version }}.tar.xz
   sha256: aeea6ae7cd35e83dfc7699be716519faefca346c62e784dd1a37d9df94c08f52
   patches:
-    - m_pi.patch
-    - no-module-warning.patch
+    - patches/m_pi.patch
+    - patches/no-module-warning.patch
+    # Update of the compiler to GCC 11.2 causes false positives out of bounds accesses.
+    # taken from: https://github.com/msys2/MINGW-packages/commit/51bd1869e828906954b6afca4a46ca896c8b0d88
+    - patches/0006-avoid-diagnostics-for-gcc-11-false-positive-out-of-bounds.patch
 
 build:
   number: 3
