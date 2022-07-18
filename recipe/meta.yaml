@@ -33,6 +33,7 @@ build:
     - '*/libX11.so*'              # [linux]
     - '*/libXext.so*'             # [linux]
     - '/usr/lib/libcups.2.dylib'  # [osx]
+    - '*'                         # [linux and aarch64]
   ignore_run_exports:
     - pixman
 

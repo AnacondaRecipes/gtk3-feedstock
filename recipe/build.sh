@@ -33,3 +33,8 @@ bin/gtk3-demo*
 bin/gtk3-icon-browser
 bin/gtk3-widget-factory
 ")
+
+# 2022/7/18 SK: Copy over DSOs to resolve missing libXi.so.6 error on linux-aarch64
+if [[ $target_platform == linux-aarch64 ]]; then
+  cp -n ${BUILD_PREFIX}/aarch64-conda-linux-gnu/sysroot/usr/lib64/*.so* ${PREFIX}/lib/
+fi
