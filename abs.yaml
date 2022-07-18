@@ -1,5 +1,5 @@
 aggregate_check: false
 channels:
-  - skupr
+  - c3i_test2
 upload_channels:
-  - skupr
+  - c3i_test2
