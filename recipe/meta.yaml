@@ -17,7 +17,7 @@ source:
     - patches/no-module-warning.patch
     # Update of the compiler to GCC 11.2 causes false positives out of bounds accesses.
     # taken from: https://github.com/msys2/MINGW-packages/commit/51bd1869e828906954b6afca4a46ca896c8b0d88
-    - patches/0006-avoid-diagnostics-for-gcc-11-false-positive-out-of-bounds.patch # [linux]
+    - patches/0006-avoid-diagnostics-for-gcc-11-false-positive-out-of-bounds.patch  # [linux]
 
 build:
   number: 6
@@ -85,7 +85,7 @@ requirements:
     - pango 1.50.7
     # dependencies needed with x11 enabled
     - at-spi2-atk                          # [linux]
-    - fontconfig {{ fntconfig }}           # [linux]
+    - fontconfig {{ fontconfig }}           # [linux]
     # dependencies needed with wayland enabled
     #- libxkbcommon                        # [linux]
   run:
