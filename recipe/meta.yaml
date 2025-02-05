@@ -69,22 +69,23 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}    # [linux]
     - patch       # [not win]
     - m2-patch    # [win]
+    - setuptools <74 # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
   host:
-    - atk
+    - atk >=2.36.0
     - cairo  {{ cairo }}
-    - epoxy
+    - epoxy 1
     - freetype {{ freetype }}              # [not win]
-    - fribidi
-    - gdk-pixbuf
-    - gettext                              # [osx]
+    - fribidi 1
+    - gdk-pixbuf 2
+    - gettext 0.21.0                       # [osx]
     - glib 2
     - gobject-introspection 1.*
     - harfbuzz {{ harfbuzz }}              # [not win]
-    - libcups                              # [linux]
-    - libiconv                             # [win]
+    - libcups 2.*                          # [linux]
+    - libiconv 1                           # [win]
     - pango 1.50.7
     # dependencies needed with x11 enabled
-    - at-spi2-atk                          # [linux]
+    - at-spi2-atk 2                         # [linux]
     - fontconfig {{ fontconfig }}           # [linux]
     # dependencies needed with wayland enabled
     #- libxkbcommon                        # [linux]
