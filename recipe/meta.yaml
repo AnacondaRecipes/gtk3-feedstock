@@ -17,10 +17,10 @@ source:
     - patches/no-module-warning.patch
     # Update of the compiler to GCC 11.2 causes false positives out of bounds accesses.
     # taken from: https://github.com/msys2/MINGW-packages/commit/51bd1869e828906954b6afca4a46ca896c8b0d88
-    - patches/0006-avoid-diagnostics-for-gcc-11-false-positive-out-of-bounds.patch # [linux]
+    - patches/0006-avoid-diagnostics-for-gcc-11-false-positive-out-of-bounds.patch  # [linux]
 
 build:
-  number: 5
+  number: 6
   skip: True  # [not (aarch64 or arm64)]; currently only on these architectures
   # workaround for bug in LIEF (https://github.com/lief-project/LIEF/issues/239)
   # that resulted in missing symbols
@@ -69,23 +69,24 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}    # [linux]
     - patch       # [not win]
     - m2-patch    # [win]
+    - setuptools <74 # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
   host:
-    - atk
-    - cairo
-    - epoxy
-    - freetype                             # [not win]
-    - fribidi
-    - gdk-pixbuf
-    - gettext                              # [osx]
-    - glib
-    - gobject-introspection
-    - harfbuzz                             # [not win]
-    - libcups                              # [linux]
-    - libiconv                             # [win]
-    - pango
+    - atk >=2.36.0
+    - cairo  {{ cairo }}
+    - epoxy 1
+    - freetype {{ freetype }}              # [not win]
+    - fribidi 1
+    - gdk-pixbuf 2
+    - gettext 0.21.0                       # [osx]
+    - glib 2
+    - gobject-introspection 1.*
+    - harfbuzz {{ harfbuzz }}              # [not win]
+    - libcups 2.*                          # [linux]
+    - libiconv 1                           # [win]
+    - pango 1.50.7
     # dependencies needed with x11 enabled
-    - at-spi2-atk                          # [linux]
-    - fontconfig                           # [linux]
+    - at-spi2-atk 2                         # [linux]
+    - fontconfig {{ fontconfig }}           # [linux]
     # dependencies needed with wayland enabled
     #- libxkbcommon                        # [linux]
   run:
