@@ -170,7 +170,7 @@ test:
     
     - ls -la $PREFIX/share/icons/hicolor/ || true  # [not win]
     - mkdir -p $PREFIX/share/icons/hicolor/  # [not win]
-    - gtk-update-icon-cache -f -t -q $PREFIX/share/icons/hicolor/  # [not win]
+    - gtk-update-icon-cache --force $PREFIX/share/icons/hicolor/  # [not win]
     
     - ls -la $PREFIX/lib/gtk-3.0/3.0.0/ || true  # [not win]
     - mkdir -p $PREFIX/lib/gtk-3.0/3.0.0/  # [not win]
@@ -179,7 +179,7 @@ test:
     - mkdir -p %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
     - glib-compile-schemas %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
     - mkdir -p %PREFIX%\\Library\\share\\icons\\hicolor\\  # [win]
-    - gtk-update-icon-cache -f -t -q %PREFIX%\\Library\\share\\icons\\hicolor\\  # [win]
+    - gtk-update-icon-cache --force %PREFIX%\\Library\\share\\icons\\hicolor\\  # [win]
     - mkdir -p %PREFIX%\\Library\\lib\\gtk-3.0\\3.0.0\\  # [win]
     - gtk-query-immodules-3.0 --update-cache  # [win]
     
