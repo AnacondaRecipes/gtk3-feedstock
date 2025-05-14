@@ -49,10 +49,6 @@ requirements:
     - cairo  # [linux]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    # TODO: map CDT mesa-libEGL-devel to new X11 package
-    # - { cdt('mesa-libEGL-devel') }
-    # TODO: map CDT mesa-libGL-devel to new X11 package
-    # - { cdt('mesa-libGL-devel') }
     - patch  # [not win]
     - m2-patch  # [win]
     - setuptools <74  # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
@@ -75,23 +71,23 @@ requirements:
     - fontconfig {{ fontconfig }}  # [linux]
     # dependencies needed with wayland enabled
     #- libxkbcommon                        # [linux]
-    - xorg-libxau
-    - xorg-libice
-    - xorg-libsm
-    - xorg-libx11
-    - xorg-libxcomposite
-    - xorg-libxcursor
-    - xorg-libxdamage
-    - xorg-libxext
-    - xorg-libxi
-    - xorg-libxinerama
-    - xorg-libxfixes
-    - xorg-libxrandr
-    - xorg-libxrender
-    - xorg-libxtst
-    - xorg-xorgproto
-    - mesa-libgl-devel
-    - mesa-libegl-devel
+    - xorg-libxau  # [linux]
+    - xorg-libice  # [linux]
+    - xorg-libsm  # [linux]
+    - xorg-libx11  # [linux]
+    - xorg-libxcomposite  # [linux]
+    - xorg-libxcursor  # [linux]
+    - xorg-libxdamage  # [linux]
+    - xorg-libxext  # [linux]
+    - xorg-libxi  # [linux]
+    - xorg-libxinerama  # [linux]
+    - xorg-libxfixes  # [linux]
+    - xorg-libxrandr  # [linux]
+    - xorg-libxrender  # [linux]
+    - xorg-libxtst  # [linux]
+    - xorg-xorgproto  # [linux]
+    - mesa-libgl-devel  # [linux]
+    - mesa-libegl-devel  # [linux]
   run:
     - gdk-pixbuf
     - glib
@@ -163,24 +159,24 @@ test:
     {% endfor %}
     
     # Generate the cache files during testing rather than checking for their existence
-    # Since post-link scripts don't run during testing
-    - ls -la $PREFIX/share/glib-2.0/schemas/ || true  # [not win]
+    # Since post-link scripts don't run during testing, we need to create these files manually here
+    
+    # Schema compilation needs a directory with schema files
     - mkdir -p $PREFIX/share/glib-2.0/schemas/  # [not win]
     - glib-compile-schemas $PREFIX/share/glib-2.0/schemas/  # [not win]
     
-    - ls -la $PREFIX/share/icons/hicolor/ || true  # [not win]
-    - mkdir -p $PREFIX/share/icons/hicolor/  # [not win]
-    # Create a minimal icon theme structure to force cache creation
+    # Icon theme cache generation requires a proper theme structure with at least one icon
+    # to successfully generate the cache file
     - mkdir -p $PREFIX/share/icons/hicolor/16x16/apps/  # [not win]
     - mkdir -p $PREFIX/share/icons/hicolor/24x24/apps/  # [not win]
     - touch $PREFIX/share/icons/hicolor/16x16/apps/dummy.png  # [not win]
-    # Force cache creation with --ignore-theme-index
     - gtk-update-icon-cache --force --ignore-theme-index $PREFIX/share/icons/hicolor/  # [not win]
     
-    - ls -la $PREFIX/lib/gtk-3.0/3.0.0/ || true  # [not win]
+    # Input methods cache needs its directory
     - mkdir -p $PREFIX/lib/gtk-3.0/3.0.0/  # [not win]
     - gtk-query-immodules-3.0 --update-cache  # [not win]
     
+    # Windows versions of the same commands
     - mkdir -p %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
     - glib-compile-schemas %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
     - mkdir -p %PREFIX%\\Library\\share\\icons\\hicolor\\16x16\\apps\\  # [win]
@@ -190,27 +186,13 @@ test:
     - mkdir -p %PREFIX%\\Library\\lib\\gtk-3.0\\3.0.0\\  # [win]
     - gtk-query-immodules-3.0 --update-cache  # [win]
     
-    # Now verify that the files were created
-    - ls -la $PREFIX/share/glib-2.0/schemas/  # [not win]
+    # Verify that the files were created correctly
     - test -f $PREFIX/share/glib-2.0/schemas/gschemas.compiled  # [not win]
     - if not exist %PREFIX%\\Library\\share\\glib-2.0\\schemas\\gschemas.compiled exit 1  # [win]
-    
-    - ls -la $PREFIX/share/icons/hicolor/  # [not win]
     - test -f $PREFIX/share/icons/hicolor/icon-theme.cache  # [not win]
     - if not exist %PREFIX%\\Library\\share\\icons\\hicolor\\icon-theme.cache exit 1  # [win]
-    
-    - ls -la $PREFIX/lib/gtk-3.0/3.0.0/  # [not win]
     - test -f $PREFIX/lib/gtk-3.0/3.0.0/immodules.cache  # [not win]
     - if not exist %PREFIX%\\Library\\lib\\gtk-3.0\\3.0.0\\immodules.cache exit 1  # [win]
-    
-    # run selected demos - disabled because they might depend on pygobject
-    # {% set demos = ["application_demo", "clipboard", "cursors"] %}
-    # {% set demos = demos + ["dialog", "drawingarea", "menus"] %}
-    # {% set demos = demos + ["pixbufs"] %}
-    # {% for demo in demos %}
-    # - xvfb-run -a -s "-screen 0 1024x768x24" bash -c 'gtk3-demo --run {{ demo }} --autoquit'  # [linux]
-    # - gtk3-demo --run {{ demo }} --autoquit  # [not linux]
-    # {% endfor %}
 
 about:
   home: https://www.gtk.org/
