@@ -164,18 +164,35 @@ test:
     
     # Generate the cache files during testing rather than checking for their existence
     # Since post-link scripts don't run during testing
+    - ls -la $PREFIX/share/glib-2.0/schemas/ || true  # [not win]
+    - mkdir -p $PREFIX/share/glib-2.0/schemas/  # [not win]
     - glib-compile-schemas $PREFIX/share/glib-2.0/schemas/  # [not win]
-    - glib-compile-schemas %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
-    - gtk-update-icon-cache --quiet $PREFIX/share/icons/hicolor/  # [not win]
-    - gtk-update-icon-cache --quiet %PREFIX%\\Library\\share\\icons\\hicolor\\  # [win]
+    
+    - ls -la $PREFIX/share/icons/hicolor/ || true  # [not win]
+    - mkdir -p $PREFIX/share/icons/hicolor/  # [not win]
+    - gtk-update-icon-cache -f -t -q $PREFIX/share/icons/hicolor/  # [not win]
+    
+    - ls -la $PREFIX/lib/gtk-3.0/3.0.0/ || true  # [not win]
+    - mkdir -p $PREFIX/lib/gtk-3.0/3.0.0/  # [not win]
     - gtk-query-immodules-3.0 --update-cache  # [not win]
+    
+    - mkdir -p %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
+    - glib-compile-schemas %PREFIX%\\Library\\share\\glib-2.0\\schemas\\  # [win]
+    - mkdir -p %PREFIX%\\Library\\share\\icons\\hicolor\\  # [win]
+    - gtk-update-icon-cache -f -t -q %PREFIX%\\Library\\share\\icons\\hicolor\\  # [win]
+    - mkdir -p %PREFIX%\\Library\\lib\\gtk-3.0\\3.0.0\\  # [win]
     - gtk-query-immodules-3.0 --update-cache  # [win]
     
     # Now verify that the files were created
+    - ls -la $PREFIX/share/glib-2.0/schemas/  # [not win]
     - test -f $PREFIX/share/glib-2.0/schemas/gschemas.compiled  # [not win]
     - if not exist %PREFIX%\\Library\\share\\glib-2.0\\schemas\\gschemas.compiled exit 1  # [win]
+    
+    - ls -la $PREFIX/share/icons/hicolor/  # [not win]
     - test -f $PREFIX/share/icons/hicolor/icon-theme.cache  # [not win]
     - if not exist %PREFIX%\\Library\\share\\icons\\hicolor\\icon-theme.cache exit 1  # [win]
+    
+    - ls -la $PREFIX/lib/gtk-3.0/3.0.0/  # [not win]
     - test -f $PREFIX/lib/gtk-3.0/3.0.0/immodules.cache  # [not win]
     - if not exist %PREFIX%\\Library\\lib\\gtk-3.0\\3.0.0\\immodules.cache exit 1  # [win]
     
