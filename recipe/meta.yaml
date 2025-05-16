@@ -69,25 +69,17 @@ requirements:
     # dependencies needed with x11 enabled
     - at-spi2-atk 2  # [linux]
     - fontconfig {{ fontconfig }}  # [linux]
-    # dependencies needed with wayland enabled
+    # libxkbcommon dependency needed with wayland enabled
     #- libxkbcommon                        # [linux]
-    - xorg-libxau  # [linux]
-    - xorg-libice  # [linux]
-    - xorg-libsm  # [linux]
     - xorg-libx11  # [linux]
     - xorg-libxcomposite  # [linux]
     - xorg-libxcursor  # [linux]
     - xorg-libxdamage  # [linux]
     - xorg-libxext  # [linux]
+    - xorg-libxfixes  # [linux]
     - xorg-libxi  # [linux]
     - xorg-libxinerama  # [linux]
-    - xorg-libxfixes  # [linux]
     - xorg-libxrandr  # [linux]
-    - xorg-libxrender  # [linux]
-    - xorg-libxtst  # [linux]
-    - xorg-xorgproto  # [linux]
-    - mesa-libgl-devel  # [linux]
-    - mesa-libegl-devel  # [linux]
   run:
     - gdk-pixbuf
     - glib
