@@ -1,5 +1,4 @@
 channels:
   - https://staging.continuum.io/prefect/fs/at-spi2-core-feedstock/pr4/e34c647
   - https://staging.continuum.io/prefect/fs/at-spi2-atk-feedstock/pr2/d609834
-  - https://staging.continuum.io/prefect/fs/cairo-feedstock/pr9/41e8d4b
-
+  - https://staging.continuum.io/prefect/fs/cairo-feedstock/pr9/a26582c
