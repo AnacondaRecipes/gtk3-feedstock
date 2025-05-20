@@ -23,8 +23,6 @@ meson setup builddir \
 ninja -v -C builddir -j ${CPU_COUNT}
 ninja -C builddir install -j ${CPU_COUNT}
 
-ldd $PREFIX/lib/libcairo.so
-
 cd $PREFIX
 find . '(' -name '*.la' -o -name '*.a' ')' -delete
 rm -rf $(echo "

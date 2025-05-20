@@ -82,7 +82,6 @@ requirements:
     - xorg-libxrandr  # [linux]
   run:
     - gdk-pixbuf
-    - glib
     - harfbuzz  # [not win]
     - hicolor-icon-theme
     - libcups  # [linux]
