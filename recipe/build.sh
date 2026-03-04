@@ -4,9 +4,14 @@
 
 set -ex
 
+export PKG_CONFIG="$BUILD_PREFIX/bin/pkg-config"
+export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:$PREFIX/share/pkgconfig:${PKG_CONFIG_PATH:-}"
+export CMAKE_PREFIX_PATH="$PREFIX:${CMAKE_PREFIX_PATH:-}"
+
 meson_config_args=(
     -D gtk_doc=false
     -D demos=false
+    -D tests=false
     -D examples=false
     -D installed_tests=false
     -D wayland_backend=false
@@ -18,8 +23,9 @@ export DESTDIR="/"
 meson setup builddir \
     "${meson_config_args[@]}" \
     --prefix=$PREFIX \
-    --libdir=$PREFIX/lib  \
+    --libdir=lib \
     --wrap-mode=nofallback
+
 ninja -v -C builddir -j ${CPU_COUNT}
 ninja -C builddir install -j ${CPU_COUNT}
 
