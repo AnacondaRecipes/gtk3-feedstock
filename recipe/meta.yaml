@@ -104,7 +104,7 @@ test:
     # other binaries require a display, check that they get installed
     - command -v gtk-builder-tool       # [not win]
     - where gtk-builder-tool            # [win]
-    - gtk-query-settings --help         # [linux]
+    - command -v gtk-query-settings     # [linux]
     - gtk-query-settings                # [not linux]
 
     # verify that (some) headers get installed
