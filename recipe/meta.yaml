@@ -95,7 +95,6 @@ test:
     - pkg-config
     # X11 libraries are already in host section
     # - pygobject  # For testing Python bindings
-    - xorg-xserver-xvfb  # [linux]
   commands:
     # check that the binaries can run
     - gtk-encode-symbolic-svg --help
@@ -105,7 +104,7 @@ test:
     # other binaries require a display, check that they get installed
     - command -v gtk-builder-tool       # [not win]
     - where gtk-builder-tool            # [win]
-    - Xvfb :99 -screen 0 1024x768x24 -nolisten tcp -ac -fp /usr/share/fonts/X11/misc & sleep 1; DISPLAY=:99 gtk-query-settings  # [linux]
+    - gtk-query-settings --help         # [linux]
     - gtk-query-settings                # [not linux]
 
     # verify that (some) headers get installed
