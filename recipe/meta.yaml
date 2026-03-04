@@ -96,9 +96,6 @@ test:
     # X11 libraries are already in host section
     # - pygobject  # For testing Python bindings
     - xorg-xserver-xvfb  # [linux]
-    - xorg-fonts-misc    # [linux]
-    - xorg-fonts-100dpi  # [linux]
-    - xorg-fonts-75dpi   # [linux]
   commands:
     # check that the binaries can run
     - gtk-encode-symbolic-svg --help
