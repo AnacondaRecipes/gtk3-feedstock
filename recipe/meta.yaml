@@ -37,6 +37,7 @@ requirements:
     - pkg-config
     - cmake
     - pthread-stubs                     # [linux]
+    - setuptools <74  # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
   host:
     # Core dependencies for GTK
     - glib {{ glib }}
