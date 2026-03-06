@@ -32,6 +32,8 @@ requirements:
   build:
     - {{ stdlib('c') }}
     - {{ compiler('c') }}
+    # Meson check needed: Library not loaded: @rpath/libclang-cpp.20.1.dylib
+    - {{ compiler('cxx') }}              # [osx]
     - meson >=0.60.0
     - ninja-base
     - pkg-config
