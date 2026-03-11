@@ -66,6 +66,7 @@ requirements:
     - xorg-libxi {{ xorg_libxi }}                   # [linux]
     - xorg-libxinerama {{ xorg_libxinerama }}       # [linux]
     - xorg-libxrandr {{ xorg_libxrandr }}           # [linux]
+    - xorg-libxrender {{ xorg_libxrender }}         # [linux]
     # other
     - libcups {{ libcups }}             # [linux]
     - libiconv {{ libiconv }}           # [win]
