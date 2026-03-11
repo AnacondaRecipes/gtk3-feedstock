@@ -16,78 +16,77 @@ source:
     - patches/no-module-warning.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
-  # workaround for bug in LIEF (https://github.com/lief-project/LIEF/issues/239)
-  # that resulted in missing symbols
-  rpaths_patcher: patchelf              # [linux]
   run_exports:
     - {{ pin_subpackage('gtk3', max_pin='x') }}
     # gtk apps need at least a default icon set for fallback
     - adwaita-icon-theme
   missing_dso_whitelist:
     - /usr/lib/libcups.2.dylib          # [osx]
-  ignore_run_exports:
-    - pixman
-    - freetype        # [unix]
-    - libasprintf     # [osx]
-    - libgettextpo    # [osx]
-    - libcxx          # [osx]
-    - libgl           # [linux]
-    - libegl          # [linux]
-    - libstdcxx       # [linux]
+  ignore_run_exports_from:
+    - libegl-devel                      # [linux]
+    - libgl-devel                       # [linux]
 
 requirements:
   build:
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    # Meson check needed: Library not loaded: @rpath/libclang-cpp.20.1.dylib
+    - {{ compiler('cxx') }}              # [osx]
     - meson >=0.60.0
     - ninja-base
     - pkg-config
+    - cmake
     - pthread-stubs                     # [linux]
-    - git                               # [linux]
-    - cmake                             # [linux]
-    - cairo                             # [linux]
-    - {{ stdlib('c') }}
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
     - setuptools <74  # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
   host:
-    - atk >=2.35.1
-    - cairo {{ cairo }}
-    - epoxy {{ epoxy }}
-    - freetype {{ freetype }}           # [not win]
-    - fribidi {{ fribidi }}
-    - gdk-pixbuf {{ gdk_pixbuf }}
-    - gettext {{ gettext }}             # [osx]
+    # Core dependencies for GTK
     - glib {{ glib }}
-    - gobject-introspection 1.*
-    - harfbuzz {{ harfbuzz }}           # [not win]
-    - libcups 2.*           # [linux]
-    - libiconv {{ libiconv }}           # [win]
     - pango {{ pango }}
+    - fribidi {{ fribidi }}
+    - atk {{ atk_1_0 }}
+    - cairo {{ cairo }}
+    - gdk-pixbuf {{ gdk_pixbuf }}
+    - gobject-introspection
+    - epoxy {{ epoxy }}
+    # meson can't find epoxy without EGL/GL at configure time
+    - libegl-devel                                  # [linux]
+    - libgl-devel                                   # [linux]
     # dependencies needed with x11 enabled
-    - at-spi2-atk 2                            # [linux]
-    - fontconfig {{ fontconfig }}              # [linux]
-    # libxkbcommon dependency needed with wayland enabled
-    #- libxkbcommon                            # [linux]
-    # required by epoxy egl/gl libs
-    - libegl-devel                             # [linux]
-    - libgl-devel                              # [linux]
-    - xorg-libx11 {{ xorg_libx11 }}            # [linux]
-    - xorg-libxcomposite {{ xorg_libxcomposite }}  # [linux]
-    - xorg-libxcursor {{ xorg_libxcursor }}    # [linux]
-    - xorg-libxdamage {{ xorg_libxdamage }}    # [linux]
-    - xorg-libxext {{ xorg_libxext }}          # [linux]
-    - xorg-libxfixes {{ xorg_libxfixes }}      # [linux]
-    - xorg-libxi {{ xorg_libxi }}              # [linux]
-    - xorg-libxinerama {{ xorg_libxinerama }}  # [linux]
-    - xorg-libxrandr {{ xorg_libxrandr }}      # [linux]
+    - harfbuzz {{ harfbuzz }}                       # [unix]
+    - at-spi2-atk 2.34.2                            # [linux]
+    - fontconfig {{ fontconfig }}                   # [linux]
+    - xorg-libx11 {{ xorg_libx11 }}                 # [linux]
+    - xorg-libxcomposite {{ xorg_libxcomposite }}   # [linux]
+    - xorg-libxcursor {{ xorg_libxcursor }}         # [linux]
+    - xorg-libxdamage {{ xorg_libxdamage }}         # [linux]
+    - xorg-libxext {{ xorg_libxext }}               # [linux]
+    - xorg-libxfixes {{ xorg_libxfixes }}           # [linux]
+    - xorg-libxi {{ xorg_libxi }}                   # [linux]
+    - xorg-libxinerama {{ xorg_libxinerama }}       # [linux]
+    - xorg-libxrandr {{ xorg_libxrandr }}           # [linux]
+    # dependencies needed with wayland enabled
+    - libxkbcommon {{ libxkbcommon }}               # [linux]
+    - wayland {{ wayland }}                         # [linux]
+    - wayland-protocols >=1.21                      # [linux]
+    # other
+    - libcups {{ libcups }}             # [linux]
+    - libiconv {{ libiconv }}           # [win]
+    - libintl {{ libintl }}             # [osx]
   run:
+    - libglib
+    - pango
+    - fribidi
+    - cairo
     - gdk-pixbuf
-    - harfbuzz                          # [not win]
-    - hicolor-icon-theme
+    - epoxy
+    - harfbuzz                          # [unix]
+    - fontconfig                        # [linux]
     - libcups                           # [linux]
     - libiconv                          # [win]
-    - pango
+    - libintl                           # [osx]
+    - hicolor-icon-theme  # basic fallback theme
     - glib-tools  # The post-links scripts use glib-tools
 
 test:
@@ -117,38 +116,40 @@ test:
     - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gdk\\gdk.h exit 1                    # [win]
     - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gdk\\win32\\gdkwin32window.h exit 1  # [win]
     - if not exist %PREFIX%\\Library\\include\\gtk-3.0\\gtk\\gtk.h exit 1                    # [win]
-    
+
     # verify that pkgconfig files get installed
-    {% set pcs = [
-        "gail-3.0",
-        "gdk-3.0",
-        "gtk+-3.0",
-    ] %}
-    {% set pcs = pcs + ["gtk+-unix-print-3.0"] %}                 # [unix]
-    {% set pcs = pcs + ["gdk-x11-3.0", "gtk+-x11-3.0"] %}         # [linux]
-    {% set pcs = pcs + ["gdk-quartz-3.0", "gtk+-quartz-3.0"] %}   # [osx]
-    {% set pcs = pcs + ["gdk-win32-3.0", "gtk+-win32-3.0"] %}     # [win]
-    {% for pc in pcs %}
-    - test -f $PREFIX/lib/pkgconfig/{{ pc }}.pc                   # [unix]
-    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\{{ pc }}.pc exit 1  # [win]
-    {% endfor %}
+    - test -f $PREFIX/lib/pkgconfig/gail-3.0.pc        # [unix]
+    - test -f $PREFIX/lib/pkgconfig/gdk-3.0.pc         # [unix]
+    - test -f $PREFIX/lib/pkgconfig/gtk+-3.0.pc        # [unix]
+    - test -f $PREFIX/lib/pkgconfig/gtk+-unix-print-3.0.pc  # [unix]
+    - test -f $PREFIX/lib/pkgconfig/gdk-x11-3.0.pc     # [linux]
+    - test -f $PREFIX/lib/pkgconfig/gtk+-x11-3.0.pc    # [linux]
+    - test -f $PREFIX/lib/pkgconfig/gdk-quartz-3.0.pc  # [osx]
+    - test -f $PREFIX/lib/pkgconfig/gtk+-quartz-3.0.pc # [osx]
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\gail-3.0.pc exit 1        # [win]
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\gdk-3.0.pc exit 1         # [win]
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\gtk+-3.0.pc exit 1        # [win]
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\gdk-win32-3.0.pc exit 1   # [win]
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\gtk+-win32-3.0.pc exit 1  # [win]
 
     # verify that libs get installed and can be located through pkg-config
-    {% set vs_major = dict(vs2015="14", vs2017="15", vs2019="16")[c_compiler] %}  # [win]
-    {% set vs_major = "0.0" %}  # [not win]
-    {% set pc_libs = [
-        ("gail-3.0", "gailutil-3"),
-        ("gdk-3.0", "gdk-3"),
-        ("gtk+-3.0", "gtk-3"),
-    ] %}
-    {% for pc, lib in pc_libs %}
-    - test -f $PREFIX/lib/lib{{ lib }}${SHLIB_EXT}  # [unix]
-    - test -f `pkg-config --variable=libdir --dont-define-prefix {{ pc }}`/lib{{ lib }}${SHLIB_EXT}  # [unix]
-    - if not exist %PREFIX%\\Library\\bin\\{{ lib }}-vs{{ vs_major }}.dll exit 1  # [win]
-    - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=exec_prefix --dont-define-prefix {{ pc }}`) do if not exist "%%a/bin/{{ lib }}-vs{{ vs_major }}.dll" exit 1  # [win]
-    - if not exist %PREFIX%\\Library\\lib\\{{ lib }}.lib exit 1  # [win]
-    - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=libdir --dont-define-prefix {{ pc }}`) do if not exist "%%a/{{ lib }}.lib" exit 1  # [win]
-    {% endfor %}
+    # --- UNIX: verify libs exist and pkg-config libdir resolves correctly ---
+    - test -f $PREFIX/lib/libgailutil-3${SHLIB_EXT}  # [unix]
+    - test -f "$(pkg-config --variable=libdir --dont-define-prefix gail-3.0)/libgailutil-3${SHLIB_EXT}"  # [unix]
+
+    - test -f $PREFIX/lib/libgdk-3${SHLIB_EXT}  # [unix]
+    - test -f "$(pkg-config --variable=libdir --dont-define-prefix gdk-3.0)/libgdk-3${SHLIB_EXT}"  # [unix]
+
+    - test -f $PREFIX/lib/libgtk-3${SHLIB_EXT}  # [unix]
+    - test -f "$(pkg-config --variable=libdir --dont-define-prefix gtk+-3.0)/libgtk-3${SHLIB_EXT}"  # [unix]
+
+    # --- Windows: verify DLL/LIB exist (VS suffix varies; use wildcard) ---
+    - if not exist %PREFIX%\\Library\\bin\\gailutil-3-vs*.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\gdk-3-vs*.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\gtk-3-vs*.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\lib\\gailutil-3.lib exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\lib\\gdk-3.lib exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\lib\\gtk-3.lib exit 1  # [win]
     
     # Generate the cache files during testing rather than checking for their existence
     # Since post-link scripts don't run during testing, we need to create these files manually here
