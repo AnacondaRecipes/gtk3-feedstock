@@ -66,7 +66,10 @@ requirements:
     - xorg-libxi {{ xorg_libxi }}                   # [linux]
     - xorg-libxinerama {{ xorg_libxinerama }}       # [linux]
     - xorg-libxrandr {{ xorg_libxrandr }}           # [linux]
-    - xorg-libxrender {{ xorg_libxrender }}         # [linux]
+    # dependencies needed with wayland enabled
+    - libxkbcommon {{ libxkbcommon }}               # [linux]
+    - wayland {{ wayland }}                         # [linux]
+    - wayland-protocols >=1.21                      # [linux]
     # other
     - libcups {{ libcups }}             # [linux]
     - libiconv {{ libiconv }}           # [win]
